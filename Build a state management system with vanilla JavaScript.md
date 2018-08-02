@@ -60,11 +60,7 @@ Pub / Sub는 때로는 이해하기가 쉽지 않으므로 비유는 어떨까�
 
 ![img](https://cdn.css-tricks.com/wp-content/uploads/2018/07/state-management-restaurant.jpg)
 
-Hopefully thinking of it like that helps it make sense. Let’s move on!
-
 이렇게 생각하면 도움이 될 것이라 생각합니다. 계속 가시죠!
-
-The PubSub pattern loops through all of the subscriptions and fires their callbacks with that payload. It’s a great way of creating a pretty elegant reactive flow for your app and we can do it with only a few lines of code.
 
 Pub/Sub 패턴은 모든 구독을 돌며 해당 페이로드로 콜백을 발생시킵니다. 이는 앱에 대한 매우 우아한 반응형 흐름을 만드는 가장 좋은 방법이며 몇 줄의 코드만으로도 해결할 수 있습니다.
 
@@ -77,10 +73,6 @@ export default class PubSub {
   }
 }
 ```
-
-What we’ve got there is a fresh new class and we’re setting `this.events` as a blank object by default. The `this.events` object will hold our named events.
-
-After the constructor's closing bracket, add the following:
 
  우리가 가지고있는 것은 새롭고 새로운 클래스이며 우리는 기본적으로 `this.events`를 빈 객체로 설정합니다. `this.events` 객체는 명명 된 이벤트를 보유합니다. 생성자의 닫는 괄호 뒤에 다음을 추가합니다
 
@@ -103,6 +95,10 @@ This is our subscribe method. You pass a string `event`, which is the event’s 
 
 Now that we’ve got our subscribe method, guess what comes next? You know it: the `publish` method. Add the following after your subscribe method:
 
+이것이 우리의 구독 방식입니다. 이벤트의 유일한 이름인 문자열`event`와 콜백 함수를 전달합니다. `events` 콜렉션에 혹시 일치하는 이벤트가 없다면 빈 배열로 생성하여 나중에 다시 입력 할 필요가 없습니다. 그런 다음 콜백을 콜렉션으로 푸시합니다. 그것이 이미 존재한다면, 이것은 모든 메소드가 할 것입니다. 우리는 이벤트 콜렉션의 길이를 반환합니다. 누군가 이벤트에 얼마나 많은 이벤트가 있는지 알기 쉽기 때문입니다.
+
+이제 구독 방법을 알았으니 다음에 무엇을 구현할지 생각해보십시오. 여러분은 `publish` 메소드를 생성하리라는 것을 예상하셨을 겁니다. subscribe 메소드 다음에 다음을 추가하십시오.
+
 ```
 publish(event, data = {}) {
 
@@ -116,19 +112,19 @@ publish(event, data = {}) {
 }
 ```
 
-This method first checks to see if the passed event exists in our collection. If not, we return an empty array. No dramas. If there is an event, we loop through each stored callback and pass the data into it. If there are no callbacks (which shouldn’t ever be the case), it’s all good, because we created that event with an empty array in the `subscribe` method.
+이 메소드는 먼저 전달 된 이벤트가 컬렉션에 있는지 확인합니다. 그렇지 않으면 빈 배열을 반환합니다. 특별하진 않습니다. 이벤트가 있는 경우, 저장된 콜백을 반복하여 데이터를 전달합니다. If there are no callbacks (which shouldn’t ever be the case), it’s all good, because we created that event with an empty array in the `subscribe` method.
 
-That’s it for PubSub. Let’s move on to the next part!
+그것은 PubSub을 위한 것입니다. 다음 파트로 넘어 갑시다!
 
-### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-3)The core Store object
+### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-3)코어 스토어 객체
 
 Now that we’ve got our Pub/Sub module, we’ve got our only dependency for the meat‘n’taters of this little application: the Store. We’ll go ahead and start fleshing that out now.
 
-Let’s first outline what this does.
+먼저 무엇을 하는지 개괄을 설명하겠습니다.
 
-The Store is our central object. Each time you see `@import store from '../lib/store.js`, you'll be pulling in the object that we're going to write. It'll contain a `state` object that, in turn, contains our application state, a `commit` method that will call our **>mutations**, and lastly, a `dispatch` function that will call our **actions**. Amongst this and core to the `Store` object, there will be a Proxy-based system that will monitor and broadcast state changes with our `PubSub` module.
+스토어는 우리의 중심 객체입니다. `@import store from '../lib/store.js`를 볼 때마다, 우리는 작성하려고 하는 객체를 가져올 것입니다. 그것은 `state` 객체를 포함 할 것이고, 우리의 애플리케이션 상태, **mutations**를 호출 할 `commit` 메소드, 마지막으로 **actions**를 호출 할 `dispatch` 메소드를 포함 할 것입니다. 이 객체와 `Store` 객체의 핵심에는 `PubSub` 모듈을 사용하여 상태 변경을 모니터링하고 브로드캐스팅하는 프록시 기반 시스템이 있습니다.
 
-Start off by creating a new directory in your `js` directory called `store`. In there, create a new file called `store.js`. Your `js`directory should now look like this:
+`js` 디렉토리에`store`라고하는 새로운 디렉토리를 만듭니다. 거기에`store.js`라는 새로운 파일을 만듭니다. `js` 디렉토리는 다음과 같을 것입니다.
 
 ```
 /js
@@ -138,15 +134,15 @@ Start off by creating a new directory in your `js` directory called `store`. In 
     └── store.js
 ```
 
-Open up `store.js` and import our Pub/Sub module. To do that, add the following right at the top of the file:
+`store.js`를 열고 Pub / Sub 모듈을 가져옵니다. 그렇게하려면 파일의 맨 위에 다음과 같이 추가하십시오.
 
 ```
 import PubSub from '../lib/pubsub.js';
 ```
 
-For those who work with ES6 regularly, this will be very recognizable. Running this sort of code without a bundler will probably be less recognizable though. There's a [heck of a lot of support](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#Browser_compatibility) already for this approach, too!
+자주 ES6을 사용하는 사람들에게 이것은 매우 잘 알려져 있습니다. bundler없이 이런 종류의 코드를 실행하는 것은 알아볼 수있을 것입니다. 이미이 접근법에 대한 [많은 지원](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#Browser_compatibility)이 이미 있습니다!
 
-Next, let's start building out our object. Straight after the import, add the following to `store.js`:
+다음으로 객체를 만들기 시작합시다. import 후 `store.js`에 다음을 추가하십시오 :
 
 ```
 export default class Store {
@@ -158,6 +154,8 @@ export default class Store {
 
 This is all pretty self-explanatory, so let's add the next bit. We're going to add default objects for `state`, `actions`, and `mutations`. We're also adding a `status` element that we'll use to determine what the object is doing at any given time. This goes right after `let self = this;`:
 
+이것은 모두 자명합니다. 다음 문장을 추가합니다. 우리는`state`, `actions`, `mutations`에 기본 객체를 추가 할 것입니다. 우리는 또한 주어진 시간에 객체가 무엇을하고 있는지를 결정하는데 사용할`status` 요소를 추가하고 있습니다. 이것은`let self = this;`직후에 나옵니다.
+
 ```
 self.actions = {};
 self.mutations = {};
@@ -165,13 +163,15 @@ self.state = {};
 self.status = 'resting';
 ```
 
-Straight after that, we'll create a new `PubSub` instance that will be attached the `Store` as an `events` element:
+이어서 우리는`Store`를 `events`  엘리먼트로 붙일 새로운 `PubSub` 인스턴스를 생성 할 것입니다.
 
 ```
 self.events = new PubSub();
 ```
 
 Next, we're going to search the passed `params` object to see if any `actions` or `mutations` were passed in. When the `Store` object is instantiated, we can pass in an object of data. Included in that can be a collection of `actions` and `mutations` that control the flow of data in our store. The following code comes next right after the last line that you added:
+
+다음으로 전달 된 `params` 객체를 검색하여 `actions` 또는 `mutations`가 전달되었는지 확인합니다. Store 객체가 인스턴스화되면 데이터 객체를 전달할 수 있습니다. 여기에는 우리 스토어의 데이터 흐름을 제어하는`actions`와`mutations` 컬렉션이 포함될 수 있습니다. 다음 코드는 아까 추가 한 마지막 줄 바로 다음에 옵니다.
 
 ```
 if(params.hasOwnProperty('actions')) {
@@ -184,6 +184,8 @@ if(params.hasOwnProperty('mutations')) {
 ```
 
 That's all of our defaults set and nearly all of our potential params set. Let's take a look at how our `Store` object keeps track of all of the changes. We're going to use a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) to do this. What the Proxy does is essentially work on behalf of our state object. If we add a `get` trap, we can monitor every time that the object is asked for data. Similarly with a `set` trap, we can keep an eye on changes that are made to the object. This is the main part we're interested in today. Add the following straight after the last lines that you added and we'll discuss what it's doing:
+
+이것이 우리의 모든 기본 설정이며 거의 모든 잠재적 매개 변수가 설정됩니다. `Store` 객체가 어떻게 모든 변화를 추적하는지 살펴 보겠습니다. 우리는 이를 위해 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)를 사용할 것입니다. 프록시가 하는 일은 근본적으로 우리 주 객체 대신에 작동합니다. `get` 트랩을 추가하면 객체가 데이터를 요청할 때마다 모니터링 할 수 있습니다. 마찬가지로`set` 트랩과 마찬가지로 우리는 객체에 대한 변경을 감시 할 수 있습니다. 이것이 우리가 오늘 관심있는 주요 부분입니다. 추가 한 마지막 줄 다음에 다음 내용을 추가하십시오.
 
 ```
 self.state = new Proxy((params.state || {}), {
@@ -206,13 +208,19 @@ self.state = new Proxy((params.state || {}), {
 });
 ```
 
-What's happening here is we're trapping the state object `set`operations. That means that when a mutation runs something like `state.name = 'Foo'` , this trap catches it before it can be set and provides us an opportunity to work with the change or even reject it completely. In our context though, we're setting the change and then logging it to the console. We're then publishing a `stateChange` event with our `PubSub` module. Anything subscribed to that event's callback will be called. Lastly, we're checking the status of `Store`. If it's not currently running a `mutation`, it probably means that the state was updated manually. We add a little warning in the console for that to give the developer a little telling off.
+What's happening here is we're trapping the state object `set`operations. That means that when a `mutation` runs something like `state.name = 'Foo'` , this trap catches it before it can be set and provides us an opportunity to work with the change or even reject it completely. In our context though, we're setting the change and then logging it to the console. We're then publishing a `stateChange` event with our `PubSub` module. Anything subscribed to that event's callback will be called. Lastly, we're checking the status of `Store`. If it's not currently running a `mutation`, it probably means that the state was updated manually. We add a little warning in the console for that to give the developer a little telling off.
+
+여기서 일어나고있는 것은 상태 객체 `set` 연산을 트래핑하고 있다는 것입니다. 즉,`mutation`이 `state.name ='Foo'`와 같이 실행되면, 이 트랩은 설정되기 전에 그것을 캐치해서 우리가 변화에 대해 작업하거나 완전히 거부 할 수있는 기회를 제공한다는 것을 의미합니다. 하지만 우리는 `context`에서 변경 사항을 설정 한 다음 콘솔에 기록합니다. 우리는 `PubSub` 모듈로`stateChange` 이벤트를 퍼블리싱 할 것입니다. 해당 이벤트의 콜백에 가입 된 모든 항목이 호출됩니다. 마지막으로 Store의 상태를 확인하고 있습니다. 현재 `mutations`가 실행 중이 아니면 상태가 수동으로 업데이트 되었음을 의미합니다. 우리는 개발자에게 약간의 경고를 주기 위해 콘솔에 약간의 경고를 추가합니다.
 
 There's a lot going on there, but I hope you're starting to see how this is all coming together and importantly, how we're able to maintain state centrally, thanks to Proxy and Pub/Sub.
 
-#### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-4)Dispatch and commit
+많은 일들이 벌어지고 있지만 이것들이 어떻게 서로 긴밀하게 돌아가고 있는지, 프록시와 Pub/Sub 덕분에 어떻게 상태를 유지할 수 있는지를 알기를 바랍니다.
+
+#### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-4)Dispatch 와 commit
 
 Now that we've added our core elements of the `Store`, let's add two methods. One that will call our `actions` named `dispatch` and another that will call our `mutations` called `commit`. Let's start with `dispatch` by adding this method after your `constructor` in `store.js`:
+
+이제 Store의 코어 요소를 추가 했으므로 두 가지 메소드를 추가하겠습니다. `dispatch`이라는 이름의 `actions`과 `commit`이라 불리는 `mutations` 입니다. `store.js` 에 `constructor` 뒤에 이 `dispatch` 메소드를 추가합시다 :
 
 ```
 dispatch(actionKey, payload) {
@@ -240,6 +248,10 @@ The process here is: look for an action and, if it exists, set a status and call
 
 Add this after your `dispatch` method:
 
+이 프로세스는 다음과 같습니다 :`action`을 찾고, 존재한다면, 상태를 설정하고 모든 로그를 멋지게 유지하는 로깅 그룹을 생성하면서 액션을 호출합니다. (mutation이나 Proxy 로그와 같이) 기록 된 것은 우리가 정의한 그룹에 보관 될 것입니다. If no `action` is set, it'll log an error and bail. 그것은 매우 직관적이고, `commit` 메소드는 훨씬 더 직관적입니다.
+
+`dispatch` 메소드 다음에 이 코드를 추가하십시오 :
+
 ```
 commit(mutationKey, payload) {
   let self = this;
@@ -263,17 +275,27 @@ This method is pretty similar, but let's run through the process anyway. If the 
 
 With those methods added, our `Store` object is pretty much complete. You could actually modular-ize this application now if you wanted because we've added most of the bits that we need. You could also add some tests to check that everything run as expected. But I'm not going to leave you hanging like that. Let's make it all actually do what we set out to do and continue with our little app!
 
-### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-5)Creating a base component
+이 메소드는 꽤 유사하지만 어쨌든 프로세스를 실행 해 봅시다. `mutation`이 발견되면, 그것을 실행하고 리턴 값으로부터 새로운 state를 얻습니다. 그런 다음 새로운 state를 가져와 기존 state와 합쳐 state의 최신 버전을 만듭니다.
+
+추가 된 메서드를 사용하면 Store 객체가 거의 완성됩니다. 우리가 필요로하는 대부분의 코드를 추가 했으므로 원하는 경우 이 애플리케이션을 실제로 모듈화 할 수 있습니다. 모든 테스트가 예상대로 실행되는지 확인하기 위해 몇 가지 테스트를 추가 할 수도 있습니다. 그러나 이 글에서는 다루지 않겠습니다. 계속 우리의 작은 앱을 구현해 봅시다.
+
+### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-5) 기초 컴포넌트 생성
 
 To communicate with our store, we've got three main areas that update independently based on what's stored in it. We're going to make a list of submitted items, a visual count of those items, and another one that's visually hidden with more accurate information for screen readers. These all do different things, but they would all benefit from something shared to control their local state. We're going to make a base component class!
 
 First up, let's create a file. In the `lib` directory, go ahead and create a file called `component.js`. The path for me is:
+
+스토어와 주고받기 위해, 저장되는 내용을 기반으로 독립적으로 업데이트되는 세 가지 주요 영역이 있습니다. 제출 된 항목의 목록, 해당 항목의 시각적 개수 및 화면 판독기에 대한보다 정확한 정보로 시각적으로 숨겨진 다른 항목을 만들 것입니다. 이것들은 모두 다른 일을 하지만, 지역 상태(local state)를 통제하기 위해 공유되는 어떤 것에서도 베네핏을 얻습니다. 우리는 기초 컴포넌트 클래스를 만들 것입니다!
+
+먼저 파일을 만듭니다. `lib` 디렉토리에서`component.js` 파일을 생성하십시오. 제 파일의 경로는 다음과 같습니다.
 
 ```
 ~/Documents/Projects/vanilla-js-state-management-boilerplate/src/js/lib/component.js
 ```
 
 Once that file is created, open it and add the following:
+
+파일이 생성되면 파일을 열고 다음을 추가하십시오.
 
 ```
 import Store from '../store/store.js';
@@ -297,21 +319,33 @@ export default class Component {
 
 Let's talk through this chunk of code. First up, we're importing the `Store` *class*. This isn't because we want an instance of it, but more for checking one of our properties in the `constructor`. Speaking of which, in the `constructor` we're looking to see if we've got a render method. If this `Component` class is the parent of another class, then that will have likely set its own method for `render`. If there is no method set, we create an empty method that will prevent things from breaking.
 
+의 코드의 덩어리를 파헤쳐 봅시다. 먼저 `Store` *클래스*를 가져옵니다. 이것은 우리가 인스턴스를 원하기 때문이 아니라 `constructor`에서 우리의 프로퍼티 중 하나를 확인하기 위해서입니다. 말하자면, `constructor`에서 렌더링 메소드가 있는지 살펴볼 것입니다. 이 `Component` 클래스가 다른 클래스의 부모라면 `render`를 위한 자체 메소드를 설정했을 것입니다. 메소드가 설정되어 있지 않은 경우, 메소드가 파괴되지 않게하는 빈 메소드를 작성합니다.
+
 After this, we do the check against the `Store` class like I mentioned above. We do this to make sure that the `store` prop is a `Store`class instance so we can confidently use its methods and properties. Speaking of which, we're subscribing to the global `stateChange`event so our object can *react*. This is calling the `render` function each time the state changes.
+
+이 후, 우리는 위에서 언급 한 `Store` 클래스에 대한 검사를 합니다. 우리는`store` 프로퍼티가 `Store` 클래스의 인스턴스이므로 자신의 메소드와 속성을 사용할 수 있습니다. 말하자면, 우리는 전역 `stateChange` 이벤트를 구독하고 있으므로 우리의 객체는 *반응*할 수 있습니다. 이것은 상태가 바뀔 때마다 `render` 함수를 호출하고 있습니다.
 
 That's all we need to write for that class. It'll be used as a parent class that other components classes will `extend`. Let's crack on with those!
 
-### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-6)Creating our components
+그것이 우리가 그 클래스을 위해 작성해야 할 전부입니다.이 클래스는 다른 구성 요소 클래스가 `extend`하는 상위 클래스로 사용됩니다. 한번 작살내 봅시다!
+
+### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-6)컴포넌트 만들기
 
 Like I said earlier, we've got three components to make and their all going to `extend` the base `Component` class. Let's start off with the biggest one: the list of items!
 
 In your `js` directory, create a new folder called `components` and in there create a new file called `list.js`. For me the path is:
+
+이전에 말했듯이, 우리는 세 가지 컴포넌트를 만들었고, 그것들은 모두 기본 `Component` 클래스를 `extend`할 것이다. 가장 큰 것부터 시작합시다 : 아이템 목록!
+
+`js` 디렉토리에 `components`라는 새로운 폴더를 만들고 `list.js`라는 새로운 파일을 만듭니다. 제 경로는 다음과 같습니다.
 
 ```
 ~/Documents/Projects/vanilla-js-state-management-boilerplate/src/js/components/list.js
 ```
 
 Open up that file and paste this whole chunk of code in there:
+
+해당 파일을 열고 이 코드 전체를 여기에 붙여 넣으십시오.
 
 ```
 import Component from '../lib/component.js';
