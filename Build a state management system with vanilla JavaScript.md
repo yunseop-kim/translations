@@ -2,15 +2,15 @@
 
 BY [ANDY BELL ](https://css-tricks.com/author/andybell/)ON JULY 25, 2018
 
-상태 관리는 소프트웨어에서 새로운 것이 아니지만, 자바스크립트로 소프트웨어를 구축할 때는 상대적으로 생소하게 느겨질 것입니다. 전통적으로 우리는 DOM 자체에서 상태를 관리했거나, 윈도우 전역 객체에 할당하기도 했습니다. 그러나 이제는 라이브러리와 프레임워크로 이 문제를 해결 할 수 있습니다. Redux, MobX, Vuex 같은 라이브러리들은 컴포넌트 간 상태 관리를 손쉽게 관리할 수 있습니다. 이는 어플리케이션의 탄력성(resilience)에 적합하며 React 또는 Vue와 같은 상태 기반의 반응형 프레임워크에서 잘 동작합니다.
+상태 관리는 소프트웨어에서 새로운 것이 아니지만, 자바스크립트로 소프트웨어를 구축할 때는 상대적으로 생소하게 느껴질 것입니다. 전통적으로 우리는 DOM 자체에서 상태를 관리했거나, 윈도우 전역 객체에 할당하기도 했습니다. 그러나 이제는 라이브러리와 프레임워크로 이 문제를 해결 할 수 있습니다. Redux, MobX, Vuex 같은 라이브러리들은 컴포넌트 간 상태 관리를 손쉽게 관리할 수 있습니다. 이는 어플리케이션의 탄력성(resilience)에 적합하며 React 또는 Vue와 같은 상태 기반의 반응형 프레임워크에서 잘 동작합니다.
 
 이 라이브러리들은 어떻게 작동할까요? 우리가 스스로 코드를 작성하려면 무엇이 필요할까요? 파헤쳐보면 간단하게 몇 가지 일반적인 패턴을 배우고 우리에게 유용한 API에 대해서 배울 수 있습니다.
 
-시작하기 전에, 당신이 자바스크립트에 대해 중급자 이상의 지식이 있는 것이 좋습니다. 데이터 타입에 대해 알아야 하며, ES6 이상의 자바스크립트 기능에 대한 지식이 있어야 합니다. 그렇지 않다면 [이곳](https://css-tricks.com/learning-gutenberg-4-modern-javascript-syntax/)에서 선행 학습을 해주세요. Redux 나 MobX를 이걸로 대체해야한다는 말은 아닙니다. 우리는 스킬 업을위한 약간의 프로젝트를 진행할 것입니다. JavaScript 페이로드의 크기를 신경쓰고 있다면 작은 애플리케이션에 확실히 도움이 될 수 있습니다.
+시작하기 전에, 당신이 자바스크립트에 대해 중급자 이상의 지식이 있는 것이 좋습니다. 데이터 타입에 대해 알아야 하며, ES6 이상의 자바스크립트 기능에 대한 지식이 있어야 합니다. 그렇지 않다면 [이곳](https://css-tricks.com/learning-gutenberg-4-modern-javascript-syntax/)에서 선행 학습을 해주세요. Redux 나 MobX를 이걸로 대체해야한다는 말은 아닙니다. 우리는 스킬 업을 위한 작은 프로젝트를 진행할 것입니다. JavaScript 페이로드의 크기를 신경쓰고 있다면 작은 애플리케이션에 확실히 도움이 될 수 있습니다.
 
 ### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-0)시작하기
 
-코드 속으로 빠져들기 전에, 우리가 무엇을 만드는지 확인해 봅시다. "한 일 리스트"는 여러분이 오늘 달성한 것들을 추가시키는 앱입니다. 프레임워크의 의존성 없이 다양한 UI요소를 마술같이 업데이트 할 겁니다. 사실 마술은 아닙니다. Behind the scenes, we’ve got a little state system that’s sitting, waiting for instructions and maintaining a single source of truth in a predictable fashion.
+코드 속으로 빠져들기 전에, 우리가 무엇을 만드는지 확인해 봅시다. "한 일 리스트"는 여러분이 오늘 달성한 것들을 추가시키는 앱입니다. 프레임워크의 의존성 없이 다양한 UI요소를 마술같이 업데이트 할 겁니다. (사실 마술은 아닙니다.) Behind the scenes, we’ve got a little state system that’s sitting, waiting for instructions and maintaining a single source of truth in a predictable fashion.
 
 [데모](https://vanilla-js-state-management.hankchizljaw.io/)
 
@@ -18,7 +18,7 @@ BY [ANDY BELL ](https://css-tricks.com/author/andybell/)ON JULY 25, 2018
 
 멋지죠? 관리를 먼저 해 봅시다. 해당 튜토리얼을 잘 유지할 수 있도록 약간의 보일러플레이트를 넣었습니다. 여러분이 해야 할 첫번째 일은 [GitHub에서 클론](https://github.com/hankchizljaw/vanilla-js-state-management-boilerplate) 하거나 [ZIP 아카이브](https://github.com/hankchizljaw/vanilla-js-state-management-boilerplate/archive/master.zip)를 다운로드 한 뒤 압축을 푸는 것입니다.
 
-작업을 마치면 이제 로컬 웹 서버를 실행해야 합니다. 저는 [http-server](https://www.npmjs.com/package/http-server)와 같은 패키지를 이용할 것이지만, 여러분의 입맛에 맞게 서버를 사용해도 됩니다. 로컬로 실행하면 다음과 같은 내용이 표시됩니다:
+작업을 마치면 이제 로컬 웹 서버를 실행해야 합니다. 저는 [http-server](https://www.npmjs.com/package/http-server)와 같은 패키지를 이용할 것이지만, 여러분의 입맛에 맞는 다른 서버를 사용해도 됩니다. 로컬로 실행하면 다음과 같은 내용이 표시됩니다:
 
 ![img](https://cdn.css-tricks.com/wp-content/uploads/2018/07/state-js-1.png)보일러 플레이트의 초기 상태입니다.
 
@@ -42,7 +42,7 @@ BY [ANDY BELL ](https://css-tricks.com/author/andybell/)ON JULY 25, 2018
 
 ### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-2)Pub/Sub
 
-다음으로, `src` 폴더를 연 다음 거기에 있는 js 폴더를 여세요. `lib` 이라는 새 폴더를 만드세요. 그 안에 `pubsub.js` 라는 파일을 만드세요.
+다음으로, `src` 폴더를 연 다음 거기에 있는 js 폴더를 열고, `lib` 이라는 새 폴더를 만듭니다. 그리고 안에 `pubsub.js` 라는 파일을 만듭니다.
 
 `js ` 폴더의 구조는 아래와 같습니다.
 
@@ -52,17 +52,15 @@ BY [ANDY BELL ](https://css-tricks.com/author/andybell/)ON JULY 25, 2018
 └── pubsub.js
 ```
 
-Open up `pubsub.js` because we’re going to make a little [Pub/Sub pattern](https://msdn.microsoft.com/en-us/magazine/hh201955.aspx), which is short for “Publish/Subscribe." We’re creating the functionality that allows other parts of our application to subscribe to named events. Another part of the application can then publish those events, often with some sort of relevant payload.
+작은 [Pub/Sub 패턴](https://msdn.microsoft.com/en-us/magazine/hh201955.aspx) ("Publish/Subscribe"의 줄임말) 을 만들 것이므로 `pubsub.js`를 여십시오. 우리는 어플리케이션의 어느 한 부분을 명명 된 이벤트로 구독(subscribe) 할 수 있는 기능을 만들고 있습니다. 어플리케이션의 다른 부분에서는 연관된 이벤트를 게시(publish) 할수 있습니다.
 
-작은 [Pub/Sub 패턴](https://msdn.microsoft.com/en-us/magazine/hh201955.aspx) ("Publish/Subscribe"의 줄임말) 을 만들 것이므로 pubsub.js를 여십시오. 우리는 어플리케이션의 어느 한 부분을 명명 된 이벤트로 구독 할 수 있는 기능을 만들고 있습니다. 그런 다음 어플리케이션의 이벤트는 종종 관련 페이로드와 함께 관련된 이벤트를 게시 할 수 있습니다.
-
-Pub / Sub는 때로는 이해하기가 쉽지 않으므로 비유는 어떨까요? 당신은 레스토랑에서 일하고 있으며, 고객이 에피타이저와 메인 코스를 갖고 있다고 상상해보세요. 레스토랑에서 일한 적이 있다면, 서빙하는 사람이 에피타이저를 치울 때, 요리사가 어느 테이블의 에피타이저를 비우는지 알게 됩니다. 이것은 해당 테이블의 메인 코스 요리의 시작을 알리는 단서입니다. 큰 레스토랑에서는 요리사가 몇 명이 있어서 다른 요리를 먹을수도 있습니다. 요리사들은 모두 고객이 에피타이저를 다 먹었다는 단서를 서빙하는 사람에게서 *구독*하므로 메인 코스 요리를 준비하는 *기능*을 수행합니다. 따라서 서로 다른 기능 (콜백)을 수행하기 위해 동일한 단서 (이벤트)에서 기다리는 여러 명의 요리사가 있습니다.
+Pub / Sub는 때로는 이해하기가 쉽지 않으므로 비유는 어떨까요? 당신은 레스토랑에서 일하고 있으며, 고객이 에피타이저와 메인 코스를 주문했다고 상상해보세요. 레스토랑에서 일한 적이 있다면, 서빙하는 사람이 에피타이저를 치울 때, 요리사가 어느 테이블의 에피타이저를 치우는지 알게 됩니다. 이것은 해당 테이블의 메인 코스 요리의 시작을 알리는 단서입니다. 큰 레스토랑에서는 요리사가 몇 명이 있어서 다른 요리를 먹을수도 있습니다. 요리사들은 모두 고객이 에피타이저를 다 먹었다는 단서를 서빙하는 사람에게서 *구독*하므로 메인 코스 요리를 준비하는 *기능*을 수행합니다. 따라서 서로 다른 기능 (콜백)을 수행하기 위해 동일한 단서 (이벤트)를 기다리는 여러 명의 요리사가 있습니다.
 
 ![img](https://cdn.css-tricks.com/wp-content/uploads/2018/07/state-management-restaurant.jpg)
 
 이렇게 생각하면 도움이 될 것이라 생각합니다. 계속 가시죠!
 
-Pub/Sub 패턴은 모든 구독을 돌며 해당 페이로드로 콜백을 발생시킵니다. 이는 앱에 대한 매우 우아한 반응형 흐름을 만드는 가장 좋은 방법이며 몇 줄의 코드만으로도 해결할 수 있습니다.
+Pub/Sub 패턴은 모든 구독(subscribe)을 돌며 해당 페이로드로 콜백을 발생시킵니다. 이는 앱에 대한 매우 우아한 반응형 흐름을 만드는 좋은 방법이며 몇 줄의 코드만으로도 해결할 수 있습니다.
 
  `pubsub.js`에 다음을 추가합니다.
 
@@ -74,7 +72,7 @@ export default class PubSub {
 }
 ```
 
- 우리가 가지고있는 것은 새롭고 새로운 클래스이며 우리는 기본적으로 `this.events`를 빈 객체로 설정합니다. `this.events` 객체는 명명 된 이벤트를 보유합니다. 생성자의 닫는 괄호 뒤에 다음을 추가합니다
+ 새로운 클래스를 선언하고, 기본적으로 `this.events` 를 빈 오브젝트로 설정합니다. `this.events` 객체는 명명 된 이벤트를 담습니다. constructor의 닫는 괄호 뒤에 다음을 추가합니다.
 
 constructor의 닫는 괄호 뒤에 다음을 추가합니다.
 
@@ -95,9 +93,9 @@ This is our subscribe method. You pass a string `event`, which is the event’s 
 
 Now that we’ve got our subscribe method, guess what comes next? You know it: the `publish` method. Add the following after your subscribe method:
 
-이것이 우리의 구독 방식입니다. 이벤트의 유일한 이름인 문자열`event`와 콜백 함수를 전달합니다. `events` 콜렉션에 혹시 일치하는 이벤트가 없다면 빈 배열로 생성하여 나중에 다시 입력 할 필요가 없습니다. 그런 다음 콜백을 콜렉션으로 푸시합니다. 그것이 이미 존재한다면, 이것은 모든 메소드가 할 것입니다. 우리는 이벤트 콜렉션의 길이를 반환합니다. 누군가 이벤트에 얼마나 많은 이벤트가 있는지 알기 쉽기 때문입니다.
+이것이 우리의 구독(subscribe) 메소드입니다. 이벤트의 유일한 이름인 `event`와 콜백 함수를 파라미터로 전달합니다. `events` 콜렉션에 혹시 일치하는 이벤트가 없다면, 빈 배열로 생성하여 나중에 다시 입력 할 필요가 없도록 합니다. 그런 다음 콜백을 콜렉션으로 푸시합니다. 그것이 이미 존재한다면, 이것은 모든 메소드가 할 것입니다. 우리는 이벤트 콜렉션의 길이를 반환합니다. 누구든지 쉽게 이벤트가 얼마나 있는지 알 수 있게 하기 위해서입니다.
 
-이제 구독 방법을 알았으니 다음에 무엇을 구현할지 생각해보십시오. 여러분은 `publish` 메소드를 생성하리라는 것을 예상하셨을 겁니다. subscribe 메소드 다음에 다음을 추가하십시오.
+이제 구독(subscribe) 메소드을 알았으니 다음에 무엇을 구현할지 생각해보십시오. 여러분은 `publish` 메소드를 생성하리라는 것을 예상하셨을 겁니다. subscribe 메소드 다음에 다음을 추가하십시오.
 
 ```
 publish(event, data = {}) {
@@ -140,7 +138,7 @@ Now that we’ve got our Pub/Sub module, we’ve got our only dependency for the
 import PubSub from '../lib/pubsub.js';
 ```
 
-자주 ES6을 사용하는 사람들에게 이것은 매우 잘 알려져 있습니다. bundler없이 이런 종류의 코드를 실행하는 것은 알아볼 수있을 것입니다. 이미이 접근법에 대한 [많은 지원](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#Browser_compatibility)이 이미 있습니다!
+자주 ES6을 사용하는 사람들에게 이것은 매우 잘 알려져 있습니다. bundler없이 이런 종류의 코드를 실행하는 것은 알아볼 수있을 것입니다. 이미 이 접근법에 대한 [많은 지원](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#Browser_compatibility)이 이미 있습니다!
 
 다음으로 객체를 만들기 시작합시다. import 후 `store.js`에 다음을 추가하십시오 :
 
@@ -154,7 +152,7 @@ export default class Store {
 
 This is all pretty self-explanatory, so let's add the next bit. We're going to add default objects for `state`, `actions`, and `mutations`. We're also adding a `status` element that we'll use to determine what the object is doing at any given time. This goes right after `let self = this;`:
 
-이것은 모두 자명합니다. 다음 문장을 추가합니다. 우리는`state`, `actions`, `mutations`에 기본 객체를 추가 할 것입니다. 우리는 또한 주어진 시간에 객체가 무엇을하고 있는지를 결정하는데 사용할`status` 요소를 추가하고 있습니다. 이것은`let self = this;`직후에 나옵니다.
+이것은 모두 어렵지 않게 이해할 수 있을 것입니다. 다음 문장을 추가합니다. 우리는 `state`, `actions`, `mutations` 에 기본 객체를 추가 할 것입니다. 우리는 또한 주어진 시간에 객체가 무엇을하고 있는지를 결정하는데 사용할`status` 요소를 추가하고 있습니다. 이것은 `let self = this;` 직후에 나옵니다.
 
 ```
 self.actions = {};
@@ -163,13 +161,11 @@ self.state = {};
 self.status = 'resting';
 ```
 
-이어서 우리는`Store`를 `events`  엘리먼트로 붙일 새로운 `PubSub` 인스턴스를 생성 할 것입니다.
+이어서 우리는 `Store`를  `events` 엘리먼트로 붙일 새로운 `PubSub` 인스턴스를 생성 할 것입니다.
 
 ```
 self.events = new PubSub();
 ```
-
-Next, we're going to search the passed `params` object to see if any `actions` or `mutations` were passed in. When the `Store` object is instantiated, we can pass in an object of data. Included in that can be a collection of `actions` and `mutations` that control the flow of data in our store. The following code comes next right after the last line that you added:
 
 다음으로 전달 된 `params` 객체를 검색하여 `actions` 또는 `mutations`가 전달되었는지 확인합니다. Store 객체가 인스턴스화되면 데이터 객체를 전달할 수 있습니다. 여기에는 우리 스토어의 데이터 흐름을 제어하는`actions`와`mutations` 컬렉션이 포함될 수 있습니다. 다음 코드는 아까 추가 한 마지막 줄 바로 다음에 옵니다.
 
@@ -183,9 +179,7 @@ if(params.hasOwnProperty('mutations')) {
 }
 ```
 
-That's all of our defaults set and nearly all of our potential params set. Let's take a look at how our `Store` object keeps track of all of the changes. We're going to use a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) to do this. What the Proxy does is essentially work on behalf of our state object. If we add a `get` trap, we can monitor every time that the object is asked for data. Similarly with a `set` trap, we can keep an eye on changes that are made to the object. This is the main part we're interested in today. Add the following straight after the last lines that you added and we'll discuss what it's doing:
-
-이것이 우리의 모든 기본 설정이며 거의 모든 잠재적 매개 변수가 설정됩니다. `Store` 객체가 어떻게 모든 변화를 추적하는지 살펴 보겠습니다. 우리는 이를 위해 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)를 사용할 것입니다. 프록시가 하는 일은 근본적으로 우리 주 객체 대신에 작동합니다. `get` 트랩을 추가하면 객체가 데이터를 요청할 때마다 모니터링 할 수 있습니다. 마찬가지로`set` 트랩과 마찬가지로 우리는 객체에 대한 변경을 감시 할 수 있습니다. 이것이 우리가 오늘 관심있는 주요 부분입니다. 추가 한 마지막 줄 다음에 다음 내용을 추가하십시오.
+이것이 우리의 모든 기본 설정이며 거의 모든 잠재적 매개 변수가 설정됩니다. `Store` 객체가 모든 변화를 추적하는 방법을 살펴 보겠습니다. 우리는 이를 위해 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)를 사용할 것입니다. 프록시가 하는 일은 근본적으로 우리 주 객체 대신에 작동합니다. `get` 트랩을 추가하면 객체가 데이터를 요청할 때마다 모니터링 할 수 있습니다. 마찬가지로 `set` 트랩과 마찬가지로 우리는 객체에 대한 변경을 감시 할 수 있습니다. 이것이 우리가 관심있는 주요한 부분입니다. 추가 한 마지막 줄 다음에 다음 내용을 추가하십시오.
 
 ```
 self.state = new Proxy((params.state || {}), {
@@ -387,13 +381,15 @@ export default class List extends Component {
 };
 ```
 
-I hope that code is pretty self-explanatory after what we've learned earlier in this tutorial, but let's skim through it anyway. We start off by passing our `Store` instance up to the `Component` parent class that we are extending. This is the `Component` class that we've just written.
+이 튜토리얼을 배우고 난 후에 저 코드가 아주 쉽게 이해할 수 있게 되기를 바랍니다. 하지만 일단 계속 진행해봅시다. 우리는`Store` 인스턴스를 우리가 `extend` 하고있는 `Component` 부모 클래스까지 전달함으로써 시작합니다. 이것은 방금 작성한`Component` 클래스입니다.
 
-After that, we declare our render method that gets called each time the `stateChange` Pub/Sub event happens. In this `render` method we put out either a list of items, or a little notice if there are no items. You'll also notice that each button has an event attached to it and they dispatch and action within our store. This action doesn't exist yet, but we'll get to it soon.
+그 다음으로는, render 메소드를 선언합니다. render 메소드는 Pub/Sub의 `stateChange` 이벤트가 발생할 때마다 호출됩니다. `render` 메소드에서는 리스트의 항목을 출력하거나, 항목이 없다면 간단한 메시지를 출력합니다.
 
-Next up, create two more files. These are two new components, but they're tiny — so we're just going to paste some code in them and move on.
+또한 각 버튼에는 이벤트가 첨부되어 있으며 `store`내에 `dispatch`과 `action`이 있음을 알 수 있습니다. 이 작업은 아직 존재하지 않지만 곧 진행할 예정입니다.
 
-First, create `count.js` in your `component` directory and paste the following in it:
+다음으로 두개의 파일을 더 만듭니다. 이것들은 두 가지 새로운 컴포넌트이지만, 크기는 작습니다. 그래서 우리는 코드를 붙여넣고 계속 진행할 것입니다.
+
+먼저,`component` 디렉토리에`count.js`를 만들고 그 안에 다음을 붙여 넣으십시오.
 
 ```
 import Component from '../lib/component.js';
@@ -420,7 +416,7 @@ export default class Count extends Component {
 }
 ```
 
-Looks pretty similar to list, huh? There's nothing in here that we haven't already covered, so let's add another file. In the same `components` directory add a `status.js` file and paste the following in it:
+list 코드와 비슷해 보이죠? 여기서는 내용을 다 다루었으므로 다른 파일을 추가해 보겠습니다. 같은 `components` 디렉토리에 `status.js` 파일을 추가하고 그 안에 다음을 붙여 넣으십시오 :
 
 ```
 import Component from '../lib/component.js';
@@ -443,9 +439,9 @@ export default class Status extends Component {
 }
 ```
 
-Again, we've covered everything in there, but you can see how handy it is having a base `Component` to work with, right? That's one of the many benefits of [Object-orientated Programming](https://en.wikipedia.org/wiki/Object-oriented_programming), which is what most of this tutorial is based on.
+다시 말하지만, 우리가 내용을 다 다루었지만, 기본 `Component`가 얼마나 유용하게 사용되는지 알 수 있죠? 이것은 [Object-Oriented Programming](https://en.wikipedia.org/wiki/Object-oriented_programming)의 많은 장점 중 하나입니다. 본 튜토리얼의 대부분은 이 튜토리얼을 기반으로 합니다.
 
-Finally, let's check that your `js` directory is looking right. This is the structure of where we're currently at:
+마지막으로`js` 디렉토리가 올바르게 보이는지 확인해 봅시다. 이것은 현재 디렉토리 구조입니다.
 
 ```
 /src
@@ -464,15 +460,15 @@ Finally, let's check that your `js` directory is looking right. This is the stru
 
 ### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-7)Let's wire it up
 
-Now that we've got our front-end components and our main `Store`, all we've got to do is wire it all up.
+이제 프론트 엔드 컴포넌트와 메인 `Store` 가 생겼으므로, 요소들을 연결지어 봅시다.
 
-We've got our store system and the components to render and interact with its data. Let's now wrap up by hooking up the two separate ends of the app and make the whole thing work together. We’ll need to add an initial state, some `actions` and some `mutations`. In your `store` directory, add a new file called `state.js`. For me it's like this:
+매장 시스템과 구성 요소를 렌더링하고 데이터를 주고받을수 있게 했습니다. 이제 앱의 두 개의 양 끝을 연결하여 모든 것이 돌아가도록 해보겠습니다. 우리는 초기 상태, 일부`actions`과`mutations`를 추가 할 필요가 있습니다. `store` 디렉토리에`state.js`라는 새로운 파일을 추가하십시오. 제 경로는 다음과 같습니다.
 
 ```
 ~/Documents/Projects/vanilla-js-state-management-boilerplate/src/js/store/state.js
 ```
 
-Open up that file and add the following:
+해당 파일을 열고 다음을 추가하십시오.
 
 ```
 export default {
@@ -483,7 +479,7 @@ export default {
 };
 ```
 
-This is pretty self-explanatory. We're adding a default set of items so that on first-load, our little app will be fully interactive. Let's move on to some `actions`. In your `store` directory, create a new file called `actions.js` and add the following to it:
+어렵지 않게 이해할 수 있을 겁니다. 처음 로드할 때 앱이 온전히 상호작용 할 수 있도록 디폴트 항목을 추가하겠습니다. `actions`으로 넘어 갑시다. `store` 디렉토리에 `actions.js` 라는 새로운 파일을 생성하고 다음 내용을 추가하십시오.
 
 ```
 export default {
@@ -496,7 +492,7 @@ export default {
 };
 ```
 
-The actions in this app are pretty minimal. Essentially, each action is passing a payload to a mutation, which in turn, commits the data to store. The `context`, as we learned earlier, is the instance of the `Store` class and the `payload` is passed in by whatever dispatches the action. Speaking of mutations, let's add some. In this same directory add a new file called `mutations.js`. Open it up and add the following:
+이 앱의 동작은 매우 간단합니다. 본질적으로, 각 액션은 `payload` 를 `mutation` 에 전달하고 데이터를 `store` 로 `commit`합니다. 우리가 이전에 배웠던`context`는`Store` 클래스의 인스턴스이고`payload`는 어떤 액션을 보내든간에 전달됩니다. 약간의 코드를 추가해서, mutation에 대해 이야기해 봅시다. 같은 디렉토리에 `mutations.js`라는 새로운 파일을 추가하고 다음 코드를 추가하십시오.
 
 ```
 export default {
@@ -513,9 +509,9 @@ export default {
 };
 ```
 
-Like the actions, these mutations are minimal. In my opinion, your mutations should always be simple because they have one job: mutate the store's state. As a result, these examples are as complex as they should ever be. Any proper logic should happen in your `actions`. As you can see for this system, we return the new version of the state so that the `Store`'s <code>commit` method can do its magic and update everything. With that, the main elements of the store system are in place. Let's glue them together with an index file.
+action과 마찬가지로 이러한 mutation은 작습니다. 제 의견으로는 mutation은 항상 한 가지 일을 하기 때문에 항상 단순해야합니다. 스토어의 상태를 변경(mutate)하십시오. 결과적으로이 예제들은 지금까지와 마찬가지로 복잡합니다. 당신의`action`에서 적절한 로직이 이루어져야합니다. 이 시스템에서 알 수 있듯이 `Store`의 `<code> commit` 메소드가 모든 것을 수행하고 모든 것을 업데이트 할 수 있도록 새 버전의 상태를 리턴합니다. 이를 통해 store 시스템의 주요 요소가 각 자리에 있습니다. 그것들을 인덱스 파일과 함께 붙이도록 합시다.
 
-In the same directory, create a new file called `index.js`. Open it up and add the following:
+동일한 디렉토리에서`index.js`라는 새로운 파일을 만듭니다. 그것을 열고 다음을 추가하십시오 :
 
 ```
 import actions from './actions.js';
@@ -530,17 +526,17 @@ export default new Store({
 });
 ```
 
-All this file is doing is importing all of our store pieces and glueing them all together as one succinct `Store` instance. Job done!
+이 파일이 수행하는 모든 작업은 모든 매장 조각을 가져 와서 하나의 간결한 `Store` 인스턴스로 모두 붙이는 것입니다. 작업 완료!
 
-### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-8)The final piece of the puzzle
+### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-8) 마지막 퍼즐 한 조각
 
-The last thing we need to put together is the `main.js` file that we included in our `index.html` page *waaaay* up at the start of this tutorial. Once we get this sorted, we'll be able to fire up our browsers and enjoy our hard work! Create a new file called `main.js` at the root of your `js` directory. This is how it looks for me:
+마지막으로 우리가 정리해야 할 것은 이 튜토리얼의 시작 부분에 있는`index.html` 페이지에 포함 된 `main.js` 파일입니다. 이렇게 한번만 정렬하면, 브라우저에서 실행 가능하고 우리가 열심히 작성한 코드가 동작하는 것을 볼 수 있습니다! `js` 디렉토리의 루트에 `main.js`라는 새로운 파일을 만듭니다. 제 경로는 다음과 같습니다.
 
 ```
 ~/Documents/Projects/vanilla-js-state-management-boilerplate/src/js/main.js
 ```
 
-Open it up and add the following:
+파일을 열고 다음을 추가하십시오.
 
 ```
 import store from './store/index.js'; 
@@ -553,7 +549,7 @@ const formElement = document.querySelector('.js-form');
 const inputElement = document.querySelector('#new-item-field');
 ```
 
-So far, all we're doing is pulling in dependencies that we need. We've got our `Store`, our front-end components and a couple of DOM elements to work with. Let's add this next bit to make the form interactive, straight under that code:
+So far, all we're doing is pulling in dependencies that we need. We've got our `Store`, our front-end components and a couple of DOM elements to work with. 다음 코드를 추가하여 해당 코드를 통해 폼을 인터렉티브하게 만들어 봅시다.
 
 ```
 formElement.addEventListener('submit', evt => {
@@ -569,9 +565,9 @@ formElement.addEventListener('submit', evt => {
 });
 ```
 
-What we're doing here is adding an event listener to the form and preventing it from submitting. We then grab the value of the textbox and trim any whitespace off it. We do this because we want to check if there's actually any content to pass to the store next. Finally, if there's content, we dispatch our `addItem` action with that content and let our shiny new `store` deal with it for us.
+여기서 우리가하는 일은 이벤트 리스너를 폼에 추가하여 submit하지 못하게 하는 것입니다. 그런 다음 텍스트 상자의 값을 가져 와서 공백을 제거합니다. 실제로 store에 전달할 내용이 있는지 여부를 확인하기 위해 이 작업을 수행합니다. 마지막으로, 콘텐츠가 있다면, 우리는`addItem` 액션을 콘텐츠와 함께 보내고 새로운`store`가 처리하도록합니다.
 
-Let's add some more code to `main.js`. Under the event listener, add the following:
+`main.js`에 좀 더 많은 코드를 추가합시다. 이벤트 리스너에서 다음을 추가하십시오.
 
 ```
 const countInstance = new Count();
@@ -583,26 +579,26 @@ listInstance.render();
 statusInstance.render();
 ```
 
-All we're doing here is creating new instances of our components and calling each of their `render` methods so that we get our initial state on the page.
+여기서 우리가 하는 일은 컴포넌트의 새로운 인스턴스를 생성하고 각각의`render` 메소드를 호출하여 페이지의 초기 상태를 얻는 것입니다.
 
-With that final addition, we are done!
+이것을 마지막으로 앱이 완성되었습니다!
 
-Open up your browser, refresh and bask in the glory of your new state managed app. Go ahead and add something like *"Finished this awesome tutorial"* in there. Pretty neat, huh?
+브라우저를 켜고, 우리가 만든 상태 관리 앱을 맘껏 작동시켜 보세요. "대빵 멋진 튜토리얼을 끝냄" 같은 항목도 추가해보세요. 멋지죠?
 
-### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-9)Next steps
+### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-9) 다음 단계
 
-There's a lot of stuff you could do with this little system that we've put together. Here are some ideas for taking it further on your own:
+우리가 함께 만든 이 작은 시스템으로 할 수 있는 많은 것들이 있습니다. 다음과 같이 스스로 생각해보십시오.
 
-- You could implement some local storage to maintain state, even when you reload
-- You could pull out the front-end of this and have a little state system for your projects
-- You could continue to develop the front-end of this app and make it look awesome. (I'd be really interested to see your work, so please share!)
-- You could work with some remote data and maybe even an API
-- You could take what you've learned about `Proxy` and the Pub/Sub pattern and develop those transferable skills further
+- 다시 로드 할 때도 상태를 유지하기 위해 로컬 저장소를 구현할 수 있습니다.
+- 당신의 프로젝트를 위한 작은 상태 시스템을 가질 수 있습니다.
+- 당신은 이 어플리케이션의 프론트엔드를 계속 개발하고 멋지게 만들 수 있습니다. (나는 여러분의 작업에 매우 흥미가 있습니다. 만들고 공유해주세요!)
+- 일부 원격 데이터와 API로 작업 할 수도 있습니다.
+- 당신은`Proxy`와 Pub / Sub 패턴에 대해 배운 것을 받아 들일 수 있고, 이 기술을 응용해서 개발 할 수 있습니다.
 
-### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-10)Wrapping up
+### [#](https://css-tricks.com/build-a-state-management-system-with-vanilla-javascript/#article-header-id-10) 마무리
 
-Thanks for learning about how these state systems work with me. The big, popular ones are much more complex and smarter that what we've done — but it's still useful to get an idea of how these systems work and unravel the mystery behind them. It's also useful to learn how powerful JavaScript can be with no frameworks whatsoever.
+이 상태 관리 시스템이 어떻게 작동하는지에 대해 학습해 주셔서 감사합니다. 크고 인기있는 시스템들은 우리가 한 작업보다 훨씬 복잡하고 정교합니다. 그러나 이 시스템이 어떻게 작동하는지 생각해보고 그 뒤에 숨겨진 미스테리한 부분을 이해하는 것은 매우 유용한 일입니다. JavaScript가 프레임워크 없이 얼마나 강력한지를 배우는 것도 유용합니다.
 
-If you want a finished version of this little system, check out this [GitHub repository](https://github.com/hankchizljaw/vanilla-js-state-management). You can also see a demo [here](https://vanilla-js-state-management.hankchizljaw.io/).
+이 작은 시스템의 완성 된 버전을 원한다면 이 [GitHub 저장소](https://github.com/hankchizljaw/vanilla-js-state-management)를 확인하십시오. [데모](https://vanilla-js-state-management.hankchizljaw.io/)도 볼 수 있습니다.
 
-If you develop on this further, I'd love to see it, so hit me up on [Twitter](https://twitter.com/hankchizljaw) or post in the comments below if you do!
+만약 이 글에 추가적인 의견이 있으시다면  [트위터](https://twitter.com/hankchizljaw) 나 아래에 댓글을 달아 주세요!
