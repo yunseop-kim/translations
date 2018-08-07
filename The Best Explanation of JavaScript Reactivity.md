@@ -1,5 +1,11 @@
 # The Best Explanation of JavaScript Reactivity 🎆
 
+>이 글은 원작자의 허락을 받아 번역하였으며, 글의 출처는 https://medium.com/vue-mastery/the-best-explanation-of-javascript-reactivity-fea6112dd80d 입니다.
+>
+>기술이나 번역에 대해 의견이 있으시면 댓글을 남겨주시면 반영하도록 하겠습니다. 감사합니다.
+
+
+
 많은 프론트엔드 자바스크립트 프레임워크 (예 : Angular, React, and Vue)에는 자체 반응형 엔진이 있습니다. 반응형의 작동 원리를 이해하면 개발 기술을 향상시킬 수 있고 JavaScript 프레임워크를보다 효과적으로 사용 할 수 있습니다. 아래의 영상과 아티클에서는 Vue 소스 코드에서 볼 수 있는 것과 동일한 종류의 반응형(Reactivity)을 빌드합니다.
 
 *기사를 읽는 대신이 비디오를 보는 경우* [*이 시리즈 영상*](https://www.vuemastery.com/courses/advanced-components/evan-you-on-proxies/) 을 보세요. *Vue의 창시자 인 Evan You와 반응형 및 프록시를 논의합니다.*
@@ -18,7 +24,7 @@ Vue는 `price` 값이 바뀌면 세 가지 작업을 하게 됩니다.
 - `price` `*` `quantity`를 곱하는 표현식을 다시 계산하고 페이지를 업데이트
 - `totalPriceWithTax` 함수를 다시 호출하고 페이지를 업데이트
 
-여기서 궁금증이 생기실텐데요, `price`가 바뀌면 Vue는 무엇을 업데이트 해야 하는지를 어떻게 알 수 있으며, 어떻게 전부 다를 추적 할 수 있을까요?
+여기서 궁금증이 생기실텐데요, `price`가 바뀌면 Vue는 무엇을 업데이트 해야 하는지를 어떻게 알 수 있으며, 어떻게 전부 추적 할 수 있을까요?
 
 ![img](https://cdn-images-1.medium.com/max/1600/1*t8enMn6h0gjY6HNKoSVC1g.jpeg)
 
@@ -88,8 +94,6 @@ Vue에서는 `total` 또는 `quantity`가 업데이트 될 때마다 `total`이 
 
 ![img](https://cdn-images-1.medium.com/max/1600/1*9NnQmGxZfmxhRJBUEs4Z7g.png)
 
-Notice instead of `storage` we’re now storing our anonymous functions in `subscribers`. Instead of our `record` function we now call `depend` and we now use `notify` instead of `replay`. To get this running:
-
 `storage` 대신에 익명 함수를 `subscribers`에 저장하고 있습니다. `record` 함수 대신에 `depend`을 호출하고 `replay` 대신 `notify`를 사용합니다. 이를 실행하려면 다음 코드를 작성하세요.
 
 ![img](https://cdn-images-1.medium.com/max/1600/1*Y5XJpipq7-Po1mP_eJoCGw.png)
@@ -114,7 +118,7 @@ Watcher 함수에서 우리는 몇 가지 간단한 일을 할 수 있습니다 
 
 ![img](https://cdn-images-1.medium.com/max/1600/1*U7bJcE5Ad7lxbQUP-U68uw.png)
 
-보시다시피,`watcher` 함수는 `myFunc` 인수로 취해서  전역 `target` 프로퍼티로 설정하고 `dep.depend()`를 호출하여 타겟을 구독자(subscriber)로 추가하고`target` 함수를 호출하고, `target`을 리셋합니다.
+보시다시피, `watcher` 함수는 `myFunc` 인수로 취해서  전역 `target` 프로퍼티로 설정하고 `dep.depend()`를 호출하여 타겟을 구독자(subscriber)로 추가하고`target` 함수를 호출하고, `target`을 리셋합니다.
 
 아래는 실행 결과입니다.
 
@@ -124,7 +128,7 @@ Watcher 함수에서 우리는 몇 가지 간단한 일을 할 수 있습니다 
 
 You might be wondering why we implemented `target` as a global variable, rather than passing it into our functions where needed. There is a good reason for this, which will become obvious by the end of our article.
 
-`target`을 전역 변수로 구현 한 이유가 궁금하실텐데, 이것에 대한 충분한 이유가 있으며, 이는 우리 아티클의 마지막 부분에서 명확해질 것입니다.
+`target`을 전역 변수로 구현 한 이유가 궁금하실텐데요, 이는 우리 아티클의 마지막 부분 그 이유가 명확해질 겁니다.
 
 ### ⚠️ 문제
 
@@ -140,15 +144,13 @@ You might be wondering why we implemented `target` as a global variable, rather 
 
 ![img](https://cdn-images-1.medium.com/max/1600/1*-rznzvwxr5clvYdPVq2MfA.png)
 
-`data.price` 값에 접근했으므로 `price` 속성의 Dep 클래스가 `target`에 저장되어 있는 익명 함수를 subscriber 배열에 push하고자 합니다(`dep.depend()` 를 호출함으로서). `data.quantity`에 접근했으므로 `amount` 속성 Dep 클래스가 이 `target`에 저장되어 있는 익명 함수를 subscriber 배열에 push 하고자 합니다.
+`data.price` 값에 접근했으므로 `price` 프로퍼티의 Dep 클래스가 `target`에 저장되어 있는 익명 함수를 subscriber 배열에 push하고자 합니다(`dep.depend()` 를 호출함으로서). `data.quantity`에 접근했으므로 `amount` 프로퍼티의 Dep 클래스가 이 `target`에 저장되어 있는 익명 함수를 subscriber 배열에 push 하고자 합니다.
 
 ![img](https://cdn-images-1.medium.com/max/1600/0*E-_YXfn3vJe7S_Ry.png)
 
 `data.price` 만 액세스하는 또 다른 익명의 함수가 있으면 `price` 속성 Dep 클래스에 그냥 push하고자 합니다.
 
 ![img](https://cdn-images-1.medium.com/max/1600/0*wefv6my2WWLW2385.png)
-
-When do I want `dep.notify()` to be called on `price`’s subscribers? I want them to be called when `price` is set. By the end of the article I want to be able to go into the console and do:
 
 언제 `dep.notify()`가 `price`의 구독자(subscribers)에게 호출되게 할까요? `price`가 정해지면 함수가 호출되게 하고자 합니다. 이 아티클의 끝 부분에서 저는 콘솔에 들어가서 다음과 같이 할 수 있게 하고자 합니다.
 
@@ -158,7 +160,7 @@ When do I want `dep.notify()` to be called on `price`’s subscribers? I want th
 
 ### ✅ 솔루션 : Object.defineProperty()
 
-표준 ES5 JavaScript 인 [Object.defineProperty()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) 함수에 대해 알아야합니다. 이는 속성에 대한 getter와 setter 함수를 정의 할 수 있게 해줍니다. Dep 클래스에서 사용하는 방법을 보여드리기 전에 먼저 아주 기본적인 사용법을 보여 드리겠습니다. 
+표준 ES5 JavaScript 인 [Object.defineProperty()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) 함수에 대해 알아야합니다. 이는 프로퍼티에 대한 getter와 setter 함수를 정의 할 수 있게 해줍니다. Dep 클래스에서 사용하는 방법을 보여드리기 전에 먼저 아주 기본적인 사용법을 보여 드리겠습니다. 
 
 ![img](https://cdn-images-1.medium.com/max/1600/1*KLPITQjsRSoGjOBRc6Y8zA.png)
 
@@ -228,7 +230,7 @@ Vue가 커버 아래에서 이 작업을 하는 방법은 분명 더 복잡하�
 
 ### 다음은?
 
-이 아티클이 유익하셨다면, 학습 경로의 다음 단계는 [프록시와 반응형](https://www.vuemastery.com/courses/advanced-components/evan-you-on-proxies)에 대해 배우는 것입니다. VueMastery.com에서 이 주제에 대한 내 [내 무료 비디오](https://www.vuemastery.com/courses/advanced-components/evan-you-on-proxies/)를 꼭 확인하십시오. 여기서 나는 Vue.js의 창시자 Evan You와 해당 주제에 대해 이야기합니다.
+이 아티클이 유익하셨다면, 학습 경로의 다음 단계는 [프록시와 반응형](https://www.vuemastery.com/courses/advanced-components/evan-you-on-proxies)에 대해 배우는 것입니다. VueMastery.com에서 이 주제에 대한 [내 무료 비디오](https://www.vuemastery.com/courses/advanced-components/evan-you-on-proxies/)를 꼭 확인하십시오. 여기서 나는 Vue.js의 창시자 Evan You와 해당 주제에 대해 이야기합니다.
 
 ------
 
