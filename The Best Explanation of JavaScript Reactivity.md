@@ -46,7 +46,7 @@ Vue에서는 `total` 또는 `quantity`가 업데이트 될 때마다 `total`이 
 
 ### ⚠️ 문제
 
-`total`을 계산해야하기 때문에 `price` 또는`quantity`가 변경 될 때마다 재실행해야 한다.
+`total`을 계산해야하기 때문에 `price` 또는 `quantity`가 변경 될 때마다 재실행해야 한다.
 
 ### ✅ 솔루션
 
